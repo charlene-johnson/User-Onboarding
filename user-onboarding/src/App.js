@@ -11,6 +11,7 @@ margin-top: 1.5%;
 `
 
 function App() {
+  
   return (
     <div className="App">
       <Title>User Onboarding</Title>

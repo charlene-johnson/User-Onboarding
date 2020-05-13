@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import styled from "styled-components";
 import * as yup from "yup";
 import axios from "axios";
@@ -25,11 +25,24 @@ const Input = styled.input `
     border-radius 4px;
 `
 
+const Select = styled.select `
+    width: 100%;
+    margin: 7px;
+    display: block;
+    width: 95%;
+    border: 1px solid #FFC6FF;
+    border-radius: 4px;
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+    font-family: 'Pontano Sans', sans-serif;
+`
+
 const CheckboxInput = styled.input `
     width: 90px;
     margin-left: 80px;
     border: 1px solid #FFC6FF;
     border-radius 4px;
+    margin-top: 15%;
 `
 const Button = styled.button ` 
     width: 150px;
@@ -52,6 +65,11 @@ const Paragraph = styled.p `
 
 `
 
+const Pre = styled.pre `
+    font-family: 'Jaldi', sans-serif;
+    font-size: 1.8rem;
+`
+
 const formSchema = yup.object().shape({
     name: yup
         .string()
@@ -64,6 +82,8 @@ const formSchema = yup.object().shape({
         .string()
         .min(6, "Password must be at least 6 characters long.")
         .required("Password is Required!"),
+    role: yup
+        .string(),
     terms: yup
         .boolean()
         .oneOf([true], "Please agree to terms of use"),
@@ -75,20 +95,33 @@ export default function Form () {
         name: "",
         email: "",
         password: "",
+        role: "",
         terms: false
-    })
+    });
 
+     const [buttonDisabled, setButtonDisabled] = useState(true);
+
+     useEffect(()=> {
+         formSchema.isValid(formState).then(valid=> {
+             setButtonDisabled(!valid);
+         })
+     }, [formState]);
+
+    const [post, setPost] = useState()
 
     const [errorState, setErrorState] = useState({
         name: "",
         email: "",
         password: "",
+        role: "",
         terms: ""
-    })
-    const validate = (e) => {
+    });
+    const validate = e => {
+        let value=
+        e.target.type === "checkbox" ? e.target.checked : e.target.value;
         yup
             .reach(formSchema, e.target.name)
-            .validate(e.target.value)
+            .validate(value)
             .then(valid => {
                 setErrorState({
                     ...errorState,
@@ -115,12 +148,15 @@ export default function Form () {
 
     const formSubmit = e => {
         e.preventDefault();
+        console.log("form submitted!")
         axios
             .post("https://reqres.in/api/users", formState)
-            .then(response => console.log(response))
+            .then(response => { 
+                  setPost(response.data);
+                  console.log("Success", response)
+                })
             .catch(err => console.log(err));
     };
-
 
 
 return (
@@ -157,6 +193,21 @@ return (
             />
             {errorState.password.length > 0 ? (<Paragraph>{errorState.password}</Paragraph>) : null}
         </Label>
+        <Label htmlFor="roles">
+            What is your role?
+            <Select
+                value={formState.roles}
+                name="role"
+                id="roles"
+                onChange={inputChange}
+                >
+                <option value="Full Stack Web Developer">Full Stack Web Developer</option>
+                <option value="Android Developer">Android Developer</option>
+                <option value="iOS Developer">iOS Developer</option>
+                <option value="UX/UI Designer">UX/UI Designer</option>
+            </Select>
+            {errorState.role.length > 0 ? (<Paragraph>{errorState.role}</Paragraph>) : null}
+        </Label>
         <Label htmlFor="terms">
             Terms & Conditions
             <CheckboxInput
@@ -166,9 +217,10 @@ return (
                 value={formState.terms}
                 onChange={inputChange}
             />
-            
+            {errorState.terms.length > 0 ? (<Paragraph>{errorState.terms}</Paragraph>) : null}
         </Label>
-        <Button>Submit</Button>
+        <Pre>{JSON.stringify(post, ["name","email","role"])}</Pre>
+        <Button disabled={buttonDisabled}>Submit</Button>
     </Forms>
     )
 }
