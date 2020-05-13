@@ -149,6 +149,7 @@ export default function Form () {
     const formSubmit = e => {
         e.preventDefault();
         console.log("form submitted!")
+        setFormState({name:"", email: "", password: "", role:"", terms: false})
         axios
             .post("https://reqres.in/api/users", formState)
             .then(response => { 
@@ -193,14 +194,15 @@ return (
             />
             {errorState.password.length > 0 ? (<Paragraph>{errorState.password}</Paragraph>) : null}
         </Label>
-        <Label htmlFor="roles">
+        <Label htmlFor="role">
             What is your role?
             <Select
-                value={formState.roles}
+                value={formState.role}
                 name="role"
-                id="roles"
+                id="role"
                 onChange={inputChange}
                 >
+                <option value="" disabled={true}>Select One</option>
                 <option value="Full Stack Web Developer">Full Stack Web Developer</option>
                 <option value="Android Developer">Android Developer</option>
                 <option value="iOS Developer">iOS Developer</option>
@@ -214,8 +216,9 @@ return (
                 type="checkbox"
                 name="terms"
                 id="terms"
-                value={formState.terms}
+                checked={formState.terms}
                 onChange={inputChange}
+            
             />
             {errorState.terms.length > 0 ? (<Paragraph>{errorState.terms}</Paragraph>) : null}
         </Label>
