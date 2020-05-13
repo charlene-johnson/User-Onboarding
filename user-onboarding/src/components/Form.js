@@ -14,7 +14,7 @@ const Label = styled.label `
     margin-bottom: 10px;
     text-align: center;
     width: 275px;
-    font-family: 'Architects Daughter', cursive;
+    font-family: 'Jost', sans-serif;
     font-size: 2rem;
 `
 const Input = styled.input `
@@ -202,7 +202,7 @@ return (
                 id="role"
                 onChange={inputChange}
                 >
-                <option value="" disabled={true}>Select One</option>
+                <option value="" disabled={true}>Please Select One</option>
                 <option value="Full Stack Web Developer">Full Stack Web Developer</option>
                 <option value="Android Developer">Android Developer</option>
                 <option value="iOS Developer">iOS Developer</option>
@@ -222,7 +222,7 @@ return (
             />
             {errorState.terms.length > 0 ? (<Paragraph>{errorState.terms}</Paragraph>) : null}
         </Label>
-        <Pre>{JSON.stringify(post, ["name","email","role"])}</Pre>
+        <Pre>{JSON.stringify(post,["name","email","role"])}</Pre>
         <Button disabled={buttonDisabled}>Submit</Button>
     </Forms>
     )

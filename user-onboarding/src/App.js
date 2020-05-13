@@ -6,7 +6,7 @@ import './App.css';
 
 const Title = styled.h1 `
 font-size:  5rem;
-font-family: 'Architects Daughter', cursive;
+font-family: 'Jost', sans-serif;
 margin-top: 1.5%;
 `
 
